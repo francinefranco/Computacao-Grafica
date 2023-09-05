@@ -1,0 +1,62 @@
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+import sys
+
+# coordenadas iniciais do ponto
+point_position = (0, 0)
+
+# cores para as teclas de 0 a 9
+colors = [
+    (0.0, 0.0, 1.0),  # Azul
+    (0.0, 1.0, 0.0),  # Verde
+    (1.0, 0.5, 0.0),  # Laranja
+    (1.0, 0.0, 1.0),  # Magenta
+    (0.0, 0.5, 0.0),  # Verde escuro
+    (0.0, 1.0, 1.0),  # Ciano
+    (0.5, 0.5, 0.5),  # Cinza
+    (1.0, 1.0, 0.0),  # Amarelo
+    (1.0, 0.0, 0.0),  # Vermelho
+    (0.5, 0.0, 0.5)   # Roxo
+]
+
+current_color_index = 0  # índice da cor atual
+
+# desenhar na tela
+def draw():
+    glClear(GL_COLOR_BUFFER_BIT)
+    glPointSize(5.0)
+    glColor3f(*colors[current_color_index])  # cor atual
+    glBegin(GL_POINTS)
+    glVertex2f(point_position[0] / 400.0 - 1.0, -point_position[1] / 300.0 + 1.0)  # ajusta as coordenadas
+    glEnd()
+    glFlush()
+
+# quando um botão do mouse é pressionado
+def mouse_click(button, state, x, y):
+    global point_position
+    if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN:
+        point_position = (x, y)
+        glutPostRedisplay()  # redesenha a tela
+
+# quando uma tecla é pressionada
+def keyboard(key, x, y):
+    global current_color_index
+    if key.isdigit() and 0 <= int(key) < len(colors):
+        current_color_index = int(key)
+        glutPostRedisplay()  # redesenha a tela
+
+def main():
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInitWindowSize(800, 600)
+    glutCreateWindow(b"Clique para criar um ponto colorido")
+    glClearColor(1.0, 1.0, 1.0, 0.0)  # fundo branco
+    gluOrtho2D(-1.0, 1.0, -1.0, 1.0)  # coordenadas do espaço da janela
+    glutDisplayFunc(draw)
+    glutMouseFunc(mouse_click)
+    glutKeyboardFunc(keyboard)
+    glutMainLoop()
+
+if __name__ == "__main__":
+    main()
